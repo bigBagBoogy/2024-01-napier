@@ -10,3 +10,4 @@ interface INapierSwapCallback {
      */
     function swapCallback(int256 underlyingDelta, int256 ptDelta, bytes calldata data) external;
 }
+// This interface defines a callback function that is invoked by the NapierSwap contract after executing a token swap. NapierSwap is a protocol that allows users to swap tokens between different pools with different interest rates and leverage levels1. The interface is similar to the UniswapV3SwapCallback interface, which is used by the UniswapV3 protocol for flash swaps
