@@ -13,6 +13,13 @@ import {PeripheryImmutableState} from "./PeripheryImmutableState.sol";
 /// @dev Taken and modified from Uniswap v3 periphery PeripheryPayments: https://github.com/Uniswap/v3-periphery/blob/main/contracts/base/PeripheryPayments.sol
 abstract contract PeripheryPayments is PeripheryImmutableState {
     using SafeERC20 for IERC20;
+    // The receive() function is a specialized fallback function introduced in Solidity 0.6.0.
+    // Functionality:
+    // It is automatically called when Ether (ETH) is sent to the contract with no calldata (i.e., an empty transaction).
+    // The receive() function is used for receiving plain Ether.
+    // It cannot have arguments, cannot return anything, and must be external and payable.
+    // It is executed on a call to the contract with empty calldata (e.g., via .send() or .transfer()).
+    // If no receive() function exists, the fallback function is used instead.
 
     receive() external payable {
         if (msg.sender != address(WETH9)) revert Errors.NotWETH();
@@ -73,12 +80,18 @@ abstract contract PeripheryPayments is PeripheryImmutableState {
         (bool success,) = to.call{value: value}(new bytes(0));
         if (!success) revert Errors.FailedToSendEther();
     }
-
+    // q If this function is indirectly called by a user, the user pays the gas fees in ETH??
+    // Does that give the user the power to have this revert on gas fees?
+    // the following _pay function is internal and won't be called directly
+    // Depending on the context in which _pay is called, the gas fees may be paid by different parties:
+    // If the user initiates the payment (e.g., swapping tokens), they pay the gas fees in ETH.
+    // If the protocol initiates the payment (e.g., distributing rewards), the protocol pays the gas fees.
     /// @dev Pay with token or WEH9 if the contract has enough ether
     /// @param token The token to pay
     /// @param payer The entity that must pay
     /// @param recipient The entity that will receive payment
     /// @param value The amount to pay
+
     function _pay(address token, address payer, address recipient, uint256 value) internal {
         if (token == address(WETH9) && address(this).balance >= value) {
             // pay with WETH9

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.10;
 
+// e This is used in Quoter.sol. It's just a struct. The reason why this is in it's own separate file is probably for readability and/or upgradability purposes.
+
 // Taken from: Pendle finance v2
 
 /// @notice Parameters for controlling the approximation process

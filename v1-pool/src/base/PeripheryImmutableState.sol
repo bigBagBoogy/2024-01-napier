@@ -18,9 +18,6 @@ abstract contract PeripheryImmutableState {
 }
 // The abstract keyword is used to declare an abstract contract in Solidity. An abstract contract is a contract that has at least one function without its implementation or in the case when you don’t provide arguments for all of the base contract constructors1. An abstract contract cannot be deployed by itself, it must be inherited by another contract that implements all the functions of the abstract contract2. The abstract keyword helps to define the structure and interface of a contract, and allows the child contract to reuse and override its functions. For example:
 
-// // SPDX-License-Identifier: GPL-3.0
-// pragma solidity >=0.4.22 <0.9.0;
-
 // // This is an abstract contract
 // abstract contract Animal {
 //     // This is an abstract function (no implementation body)

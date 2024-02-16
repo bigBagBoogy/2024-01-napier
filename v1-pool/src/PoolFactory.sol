@@ -143,3 +143,19 @@ contract PoolFactory is IPoolFactory, Ownable2Step {
         emit RevokedCallbackReceiver(callback);
     }
 }
+// This contract is called PoolFactory and it is part of the Napier Protocol, which is a liquidity hub for yield trading built as an extension of Curve Finance1. The contract has the following features:
+
+// It inherits from two interfaces: IPoolFactory and Ownable2Step. The first one defines the functions for deploying and managing NapierPool contracts, which are the core of the Napier AMM. The second one defines the functions for transferring and renouncing ownership of the contract.
+// It has a constant variable called POOL_CREATION_HASH, which is the hash of the NapierPool creation code. This is used to compute the address of the NapierPool contracts using the CREATE2 opcode, which allows for deterministic deployment of contracts.
+// It has an immutable variable called curveTricryptoFactory, which is the address of the Curve v2 Tricrypto Factory contract. This contract is responsible for deploying and managing Curve Tricrypto pools, which are used as base pools for NapierPool contracts. A base pool is a pool that holds three principal tokens (PTs) and their underlying asset. A PT is a fixed-income equivalent of a yield-bearing token, such as aDAI or cDAI. A PT has a maturity date, which is the date when it can be redeemed for its underlying asset plus accrued interest.
+// It has a private variable called _tempArgs, which is a struct of type InitArgs. This struct contains the assets and the configs for deploying a NapierPool contract. The assets are the base pool address, the underlying asset address, and an array of three PT addresses. The configs are the fee rate, the protocol fee percent, and the initial anchor for the NapierPool contract. The _tempArgs variable is used as a temporary storage for passing the arguments to the NapierPool constructor via a callback function.
+// It has a mapping called _pools, which maps the address of a NapierPool contract to its assets. This is used to keep track of the deployed NapierPool contracts and their associated assets.
+// It has a mapping called _authorizedCallbackReceivers, which maps the address of a contract to a boolean value. This is used to authorize certain contracts to call the callback function of the PoolFactory contract, which is required for deploying a NapierPool contract using CREATE2.
+// It has a constructor that takes two arguments: _curveTricryptoFactory and _owner. The constructor sets the curveTricryptoFactory variable to the given address and transfers the ownership of the contract to the given address.
+// It has a function called deploy, which is only callable by the owner of the contract. This function takes three arguments: basePool, underlying, and poolConfig. The function deploys a new NapierPool contract using the given arguments and returns its address. The function also performs some checks and validations on the arguments, such as:
+// The basePool must be deployed by the curveTricryptoFactory contract.
+// The underlying asset must be the same as the underlying asset of the PTs in the basePool.
+// The maturity of the PTs in the basePool must be the same.
+// The fee rate, the protocol fee percent, and the initial anchor must be within certain limits.
+// The computed address of the NapierPool contract must not already exist in the _pools mapping.
+// The function also sets the _tempArgs variable to the given arguments, deploys the NapierPool contract using the Create2PoolLib library, adds the NapierPool address and assets to the _pools mapping, deletes the _tempArgs variable, and emits a Deployed event.

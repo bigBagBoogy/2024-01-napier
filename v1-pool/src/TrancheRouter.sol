@@ -32,7 +32,7 @@ contract TrancheRouter is ITrancheRouter, PeripheryPayments, ReentrancyGuard, Mu
         TRANCHE_CREATION_HASH = _trancheFactory.TRANCHE_CREATION_HASH();
     }
 
-    /// @notice deposit an `underlyingAmount` of underlying token into the yield source, receiving PT and YT.
+    /// @notice deposit an `underlyingAmount` of underlying token into the yield source, receiving PT and YT. principal token yield token
     /// @dev Accept native ETH.
     /// @inheritdoc ITrancheRouter
     function issue(address adapter, uint256 maturity, uint256 underlyingAmount, address to)
@@ -98,3 +98,30 @@ contract TrancheRouter is ITrancheRouter, PeripheryPayments, ReentrancyGuard, Mu
         return tranche.withdraw({from: msg.sender, to: to, underlyingAmount: underlyingAmount});
     }
 }
+// This contract is a TrancheRouter, which is a periphery contract for interacting with Tranches1. Tranches are contracts that allow users to deposit an underlying token (such as ETH or ERC20) into a yield source (such as Aave or Compound) and receive two tokens in return: a principal token (PT) and a yield token (YT)2. The PT represents the initial deposit and the YT represents the interest earned over time. Users can redeem their PT and YT for the underlying token at any time, or trade them on secondary markets.
+
+// The TrancheRouter contract inherits from several base contracts that provide useful functionalities, such as:
+
+// PeripheryPayments: allows the contract to accept and send ETH or ERC20 tokens.
+// ReentrancyGuard: prevents reentrancy attacks by using a lock mechanism.
+// Multicallable: allows the contract to batch multiple function calls in one transaction.
+// The TrancheRouter contract also uses some external interfaces and libraries, such as:
+
+// IWETH9: an interface for the canonical Wrapped Ether (WETH) contract, which is an ERC20 token that wraps ETH.
+// IERC20: an interface for the standard ERC20 token contract.
+// ITrancheFactory: an interface for the TrancheFactory contract, which is responsible for creating and managing Tranches.
+// ITranche: an interface for the Tranche contract, which implements the core logic of depositing, issuing, redeeming, and burning PT and YT.
+// ITrancheRouter: an interface for the TrancheRouter contract itself, which defines the external functions that users can call.
+// SafeERC20: a library that provides safe methods for interacting with ERC20 tokens, such as checking the return value of transfer and approve.
+// TrancheAddress: a library that computes the address of a Tranche given its adapter, maturity, and creation code.
+// The TrancheRouter contract has two main functions that users can call to interact with Tranches:
+
+// issue: allows users to deposit an underlyingAmount of underlying token into the yield source, receiving PT and YT in return. The function accepts native ETH and converts it to WETH if necessary. The function also requires the user to specify the adapter (the address of the yield source adapter contract), the maturity (the timestamp when the Tranche matures), and the to (the recipient of the PT and YT). The function also allows the user to set minimum amounts for the PT and YT to prevent slippage. The function returns the actual amounts of PT and YT issued.
+
+// redeemWithYT: allows users to withdraw underlying tokens from the yield source in exchange for pyAmount of PT and YT. The function requires the user to approve the contract to spend their PT and YT. The function also requires the user to specify the adapter, the maturity, and the to (the recipient of the underlying tokens). The function returns the amount of underlying tokens redeemed.
+
+//redeem: allows users to withdraw underlying tokens from the yield source in exchange for principalAmount of PT only. The function does not require the user to provide any YT, but it will burn the equivalent amount of YT from the pool. The function returns the amount of underlying tokens redeemed.
+
+// withdraw: allows users to withdraw a specific underlyingAmount of underlying tokens from the yield source by burning the corresponding amount of PT and YT. The function returns the amount of PT and YT burned.
+
+// Both functions require the user to approve the contract to spend their PT, and they also require the user to specify the adapter, the maturity, and the to (the recipient of the underlying tokens). If the user wants to withdraw ETH, they need to set the to as the contract’s address and use the unwrapWETH9 function with Multicall to convert the WETH to ETH.
